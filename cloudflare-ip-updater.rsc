@@ -10,7 +10,7 @@
 # /system scheduler add name=cloudflare-update interval=7d on-event=cloudflare-ip-updater start-time=03:31:00
 
 :local url "https://www.cloudflare.com/ips-v4/#"
-:local listName "VPN_CF"
+:local listName "CF"
 :local tempFile "cloudflare-ips.txt"
 
 # --- 1. Удаляем старый файл ---
