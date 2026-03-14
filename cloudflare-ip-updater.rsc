@@ -3,8 +3,8 @@
 # Скачивает и обновляет список IPv4-адресов CloudFlare
 # 
 # Установка:
-# /system script add name=telegram-ip-updater source={ ... код ... }
-# /system script run telegram-ip-updater
+# /system script add name=cloudflare-ip-updater source={ ... код ... }
+# /system script run cloudflare-ip-updater
 #
 # Автозапуск:
 # /system scheduler add name=cloudflare-update interval=7d on-event=cloudflare-ip-updater start-time=03:31:00
@@ -63,7 +63,7 @@
 :local oldCount [:len [/ip firewall address-list find list=$listName]]
 :if ($oldCount > 0) do={
     /ip firewall address-list remove [find list=$listName]
-    :log info "Telegram IP updater: Removed $oldCount old entries from '$listName'"
+    :log info "cloudflare IP updater: Removed $oldCount old entries from '$listName'"
 }
 
 # --- 6. Читаем файл и добавляем новые записи ---
@@ -105,11 +105,11 @@
         :if ([:typeof $colonPos] = "nil") do={
             # Нет двоеточия - пробуем добавить как IPv4
             :do {
-                /ip firewall address-list add list=$listName address=$line comment="Telegram IPv4"
+                /ip firewall address-list add list=$listName address=$line comment="cloudflare IPv4"
                 :set count ($count + 1)
             } on-error={
                 :set skipped ($skipped + 1)
-                :log warning "Telegram IP updater: Skipped invalid IPv4 line: '$line'"
+                :log warning "cloudflare IP updater: Skipped invalid IPv4 line: '$line'"
             }
         } else={
             :set skipped ($skipped + 1)
@@ -123,7 +123,7 @@
 
 # --- 8. Финальный лог ---
 :if ($count > 0) do={
-    :log info "Telegram IP updater: Successfully added $count IPv4 entries to address list '$listName' (skipped $skipped IPv6 entries)"
+    :log info "cloudflare IP updater: Successfully added $count IPv4 entries to address list '$listName' (skipped $skipped IPv6 entries)"
 } else={
-    :log warning "Telegram IP updater: No valid IPv4 entries found! (skipped $skipped entries)"
+    :log warning "cloudflare IP updater: No valid IPv4 entries found! (skipped $skipped entries)"
 }
